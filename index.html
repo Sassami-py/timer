@@ -33,21 +33,29 @@
             <h1 class="text-xl sm:text-2xl font-bold text-slate-200 mb-5">Quanto tempo até a viagem?</h1>
 
             <!-- Grid do Cronômetro -->
-            <div class="grid grid-cols-4 gap-2 sm:gap-4">
-                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-3 flex flex-col items-center">
-                    <span id="days" class="text-2xl sm:text-4xl font-extrabold text-sky-400">00</span>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center">
+                    <span id="months" class="text-xl sm:text-3xl font-extrabold text-sky-400">00</span>
+                    <span class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider mt-1">Meses</span>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center">
+                    <span id="weeks" class="text-xl sm:text-3xl font-extrabold text-sky-400">00</span>
+                    <span class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider mt-1">Semanas</span>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center">
+                    <span id="days" class="text-xl sm:text-3xl font-extrabold text-sky-400">00</span>
                     <span class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider mt-1">Dias</span>
                 </div>
-                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-3 flex flex-col items-center">
-                    <span id="hours" class="text-2xl sm:text-4xl font-extrabold text-sky-400">00</span>
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center">
+                    <span id="hours" class="text-xl sm:text-3xl font-extrabold text-sky-400">00</span>
                     <span class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider mt-1">Horas</span>
                 </div>
-                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-3 flex flex-col items-center">
-                    <span id="minutes" class="text-2xl sm:text-4xl font-extrabold text-sky-400">00</span>
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center">
+                    <span id="minutes" class="text-xl sm:text-3xl font-extrabold text-sky-400">00</span>
                     <span class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider mt-1">Min.</span>
                 </div>
-                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-3 flex flex-col items-center">
-                    <span id="seconds" class="text-2xl sm:text-4xl font-extrabold text-sky-400">00</span>
+                <div class="bg-slate-900/80 border border-slate-700/50 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center">
+                    <span id="seconds" class="text-xl sm:text-3xl font-extrabold text-sky-400">00</span>
                     <span class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-wider mt-1">Seg.</span>
                 </div>
             </div>
@@ -132,6 +140,8 @@
             const difference = targetDate - now;
 
             if (difference <= 0) {
+                document.getElementById('months').innerText = "00";
+                document.getElementById('weeks').innerText = "00";
                 document.getElementById('days').innerText = "00";
                 document.getElementById('hours').innerText = "00";
                 document.getElementById('minutes').innerText = "00";
@@ -139,11 +149,23 @@
                 return;
             }
 
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            const totalSeconds = Math.floor(difference / 1000);
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            const totalHours = Math.floor(totalMinutes / 60);
+            const totalDays = Math.floor(totalHours / 24);
 
+            // Cálculo dos meses, semanas e dias restantes
+            const months = Math.floor(totalDays / 30.4375); // Média de dias em um mês
+            const daysAfterMonths = totalDays - Math.floor(months * 30.4375);
+            const weeks = Math.floor(daysAfterMonths / 7);
+            const days = daysAfterMonths % 7;
+
+            const hours = totalHours % 24;
+            const minutes = totalMinutes % 60;
+            const seconds = totalSeconds % 60;
+
+            document.getElementById('months').innerText = String(months).padStart(2, '0');
+            document.getElementById('weeks').innerText = String(weeks).padStart(2, '0');
             document.getElementById('days').innerText = String(days).padStart(2, '0');
             document.getElementById('hours').innerText = String(hours).padStart(2, '0');
             document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
